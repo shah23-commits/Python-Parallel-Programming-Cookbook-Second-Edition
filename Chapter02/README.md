@@ -8,7 +8,6 @@
 * **How to Use:** Use `threading.Thread(target=..., args=...)`, then `start()` and `join()`.
 * **Advantages:** Simple, clean, and requires no class overhead.
 * **Disadvantages:** Sequential `start/join` in a loop prevents real concurrency; lacks complex management.
-git commit --amend -m "Add descriptive comments to Chapter 01 and 02"
 ---
 
 ## 2. `Thread_determine.py` — Named Threads
