@@ -1,5 +1,9 @@
 # Chapter 02: Thread Synchronization and Coordination
 
+This chapter explores advanced threading concepts in Python, focusing on how to manage, identify, and synchronize multiple threads to prevent data corruption and coordinate complex tasks.
+
+---
+
 ## 1. `Thread_definition.py` — Basic Thread Creation
 * **Concept:** Creating and running basic threads using the `threading` module.
 * **Execution:** Used a loop to create 10 threads calling `my_func`. Started and joined each one sequentially.
@@ -8,7 +12,7 @@
 * **How to Use:** Use `threading.Thread(target=..., args=...)`, then `start()` and `join()`.
 * **Advantages:** Simple, clean, and requires no class overhead.
 * **Disadvantages:** Sequential `start/join` in a loop prevents real concurrency; lacks complex management.
-git commit --amend -m "Add descriptive comments to Chapter 01 and 02"
+
 ---
 
 ## 2. `Thread_determine.py` — Named Threads
@@ -114,7 +118,7 @@ git commit --amend -m "Add descriptive comments to Chapter 01 and 02"
 * **Concept:** Synchronizing multiple threads at a specific checkpoint.
 * **Execution:** Three "runner" threads wait at a `finish_line.wait()` until all arrive before proceeding.
 * **End Use:** Phased parallel algorithms where all parts must finish before the next step starts.
-* **When to Use:** When you need a "meeting" point for a fixed number of threads.
+* **When to Use:** When you need a "rendezvous" point for a fixed number of threads.
 * **How to Use:** Define `Barrier(n)`; all threads call `wait()`.
 * **Advantages:** Guarantees all threads stay "in sync" through different execution phases.
 * **Disadvantages:** If one thread fails to reach the barrier, all other threads block indefinitely.
