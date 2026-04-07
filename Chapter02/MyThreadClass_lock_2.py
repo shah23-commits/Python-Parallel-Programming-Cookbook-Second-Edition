@@ -4,7 +4,7 @@ import os
 from threading import Thread
 from random import randint
 
-# Lock Definition
+# Mutex used to synchronize specific sections of code
 threadLock = threading.Lock()
 
 class MyThreadClass (Thread):
@@ -13,16 +13,16 @@ class MyThreadClass (Thread):
       self.name = name
       self.duration = duration
    def run(self):
-      #Acquire the Lock
+      # Acquire the lock only for the print statement (Critical Section)      
       threadLock.acquire()      
       print ("---> " + self.name + \
              " running, belonging to process ID "\
              + str(os.getpid()) + "\n")
+      # Release immediately so others can print while this thread sleeps
       threadLock.release()
       time.sleep(self.duration)
       print ("---> " + self.name + " over\n")
-      #Release the Lock
-
+      
 
 def main():
     start_time = time.time()
@@ -63,7 +63,7 @@ def main():
     # End
     print("End")
 
-    #Execution Time
+    #Execution Time (Performance is better here because the time.sleep happens outside the lock)
     print("--- %s seconds ---" % (time.time() - start_time))
 
 

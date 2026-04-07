@@ -3,12 +3,14 @@ import os
 from random import randint
 from threading import Thread
 
+# Object-oriented approach to thread creation via subclassing
 class MyThreadClass (Thread):
    def __init__(self, name, duration):
       Thread.__init__(self)
       self.name = name
       self.duration = duration
    def run(self):
+      # Demonstrates that threads share the same Process ID (PID)
       print ("---> " + self.name + \
              " running, belonging to process ID "\
              + str(os.getpid()) + "\n")
@@ -20,6 +22,7 @@ def main():
     start_time = time.time()
     
     # Thread Creation
+    # Individual thread instantiation
     thread1 = MyThreadClass("Thread#1 ", randint(1,10))
     thread2 = MyThreadClass("Thread#2 ", randint(1,10))
     thread3 = MyThreadClass("Thread#3 ", randint(1,10))
@@ -31,6 +34,7 @@ def main():
     thread9 = MyThreadClass("Thread#9 ", randint(1,10))
 
     # Thread Running
+    # Triggering the run() method in separate threads
     thread1.start()
     thread2.start()
     thread3.start()
@@ -42,6 +46,7 @@ def main():
     thread9.start()
 
     # Thread joining
+    # Main thread waits for all sub-threads to finish
     thread1.join()
     thread2.join()
     thread3.join()

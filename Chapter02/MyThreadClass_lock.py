@@ -5,6 +5,7 @@ from threading import Thread
 from random import randint
 
 # Lock Definition
+# Global lock to ensure mutual exclusion
 threadLock = threading.Lock()
 
 class MyThreadClass (Thread):
@@ -13,20 +14,21 @@ class MyThreadClass (Thread):
       self.name = name
       self.duration = duration
    def run(self):
-      #Acquire the Lock
+      # Acquire lock: only one thread can proceed past this line at a time
       threadLock.acquire()      
       print ("---> " + self.name + \
              " running, belonging to process ID "\
              + str(os.getpid()) + "\n")
       time.sleep(self.duration)
       print ("---> " + self.name + " over\n")
-      #Release the Lock
+      # Release lock: allows the next waiting thread to proceed
       threadLock.release()
 
 
 def main():
     start_time = time.time()
     # Thread Creation
+    # Initializing multiple threads
     thread1 = MyThreadClass("Thread#1 ", randint(1,10))
     thread2 = MyThreadClass("Thread#2 ", randint(1,10))
     thread3 = MyThreadClass("Thread#3 ", randint(1,10))
@@ -38,6 +40,7 @@ def main():
     thread9 = MyThreadClass("Thread#9 ", randint(1,10))
 
     # Thread Running
+    # Starting threads (they will wait for the lock inside the run method)
     thread1.start()
     thread2.start()
     thread3.start()
@@ -62,7 +65,7 @@ def main():
     # End 
     print("End")
 
-    #Execution Time
+    #Execution Time (Total time will be high because the lock forces threads to run one by one)
     print("--- %s seconds ---" % (time.time() - start_time))
 
 

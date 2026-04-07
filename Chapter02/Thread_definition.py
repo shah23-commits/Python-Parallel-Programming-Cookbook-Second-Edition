@@ -8,9 +8,11 @@ def my_func(thread_number):
 def main():
     threads = []
     for i in range(10):
+        # Initializing thread with arguments
         t = threading.Thread(target=my_func, args=(i,))
         threads.append(t)
         t.start()
+        # Immediately joining ensures threads run sequentially in this specific case
         t.join()
 
 if __name__ == "__main__":

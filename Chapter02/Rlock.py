@@ -5,19 +5,23 @@ import random
 
 class Box:
     def __init__(self):
+        # RLock allows the same thread to acquire the lock multiple times
         self.lock = threading.RLock()
         self.total_items = 0
 
     def execute(self, value):
+        # Nested locking: called by add/remove while they already hold the lock
         with self.lock:
             self.total_items += value
 
     def add(self):
+        # Calls another method that also requests the same lock
         with self.lock:
             self.execute(1)
 
     def remove(self):
         with self.lock:
+            # Calls another method that also requests the same lock
             self.execute(-1)
 
 def adder(box, items):
