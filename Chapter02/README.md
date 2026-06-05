@@ -1,131 +1,400 @@
-# Chapter 02: Thread Synchronization and Coordination
+# Chapter 2: Threading and Synchronization
 
-## 1. `Thread_definition.py` — Basic Thread Creation
-* **Concept:** Creating and running basic threads using the `threading` module.
-* **Execution:** Used a loop to create 10 threads calling `my_func`. Started and joined each one sequentially.
-* **End Use:** Running a single function multiple times concurrently (e.g., background tasks).
-* **When to Use:** For simple concurrent execution without needing custom classes.
-* **How to Use:** Use `threading.Thread(target=..., args=...)`, then `start()` and `join()`.
-* **Advantages:** Simple, clean, and requires no class overhead.
-* **Disadvantages:** Sequential `start/join` in a loop prevents real concurrency; lacks complex management.
----
-
-## 2. `Thread_determine.py` — Named Threads
-* **Concept:** Assigning unique names to threads for identification.
-* **Execution:** Defined three functions (A, B, C) and used `threading.currentThread().getName()` to log their execution.
-* **End Use:** Critical for debugging and logging in multi-threaded environments.
-* **When to Use:** When you need to track specific thread behavior in complex logs.
-* **How to Use:** Pass `name='...'` during thread creation; retrieve with `getName()`.
-* **Advantages:** Improves debuggability; clearly identifies execution flow.
-* **Disadvantages:** Only identifies threads; does not influence execution logic or priority.
+This chapter introduces thread creation, thread management, and synchronization mechanisms in Python. It demonstrates how multiple threads can coordinate access to shared resources while avoiding race conditions and ensuring safe execution.
 
 ---
 
-## 3. `Thread_name_and_processes.py` — Thread Class with Process ID
-* **Concept:** Subclassing `Thread` and monitoring Process IDs (PIDs).
-* **Execution:** Created `MyThreadClass` to print its name and PID, demonstrating that all threads share one process.
-* **End Use:** Understanding the shared memory model and the limitations of the Python GIL.
-* **When to Use:** When custom thread behavior is needed through object-oriented subclassing.
-* **How to Use:** Inherit from `threading.Thread` and override the `run()` method.
-* **Advantages:** Clean, reusable design; easy to add custom properties to threads.
-* **Disadvantages:** Shared PID confirms no true CPU parallelism in standard Python (CPython).
+## Thread_definition.py
+
+### Concept
+
+Basic thread creation and execution using the threading module.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Executes tasks in separate threads.
+
+### When to Use
+
+When independent tasks can be performed concurrently.
+
+### How to Use
+
+Run the program to create and execute multiple threads.
+
+### Advantages
+
+* Simple thread creation
+* Improves responsiveness
+
+### Disadvantages
+
+* Limited performance for CPU-bound tasks due to GIL
 
 ---
 
-## 4. `MyThreadClass.py` — Custom Thread Class with Duration
-* **Concept:** Simulating workloads using custom classes and random sleep intervals.
-* **Execution:** Created 9 threads with varying sleep durations (1-10s) and measured total execution time.
-* **End Use:** Simulating real-world concurrent tasks like file downloads or API requests.
-* **When to Use:** When threads need individual properties (like specific timers or data sets).
-* **How to Use:** Pass custom arguments to `__init__` and call `Thread.__init__(self)`.
-* **Advantages:** Object-oriented; total time is determined by the slowest thread, not the sum.
-* **Disadvantages:** Unpredictable output order; potential for "messy" console printing without locks.
+## Thread_name_and_processes.py
+
+### Concept
+
+Creating custom thread classes by inheriting from the Thread class.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Provides greater control over thread behavior.
+
+### When to Use
+
+When custom thread functionality is required.
+
+### How to Use
+
+Run the program to create thread objects and execute their run() methods.
+
+### Advantages
+
+* Better code organization
+* Supports reusable thread implementations
+
+### Disadvantages
+
+* More complex than basic thread creation
 
 ---
 
-## 5. `MyThreadClass_lock.py` — Thread Lock (Sequential)
-* **Concept:** Mutual Exclusion (Mutex) using `threading.Lock()`.
-* **Execution:** Added a lock to the 9-thread simulation; each thread acquired the lock for its entire duration.
-* **End Use:** Protecting shared resources (files/databases) from simultaneous access.
-* **When to Use:** When data integrity is more important than speed.
-* **How to Use:** Call `lock.acquire()` before the task and `lock.release()` after.
-* **Advantages:** Prevents race conditions and ensures data integrity.
-* **Disadvantages:** Eliminates concurrency benefits; risk of deadlocks if a lock isn't released.
+## Thread_determine.py
+
+### Concept
+
+Identifying and managing threads using thread names.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Helps track thread execution during debugging and monitoring.
+
+### When to Use
+
+When multiple threads perform different tasks.
+
+### How to Use
+
+Run the program to observe thread names during execution.
+
+### Advantages
+
+* Easier debugging
+* Better execution tracking
+
+### Disadvantages
+
+* Additional management overhead
 
 ---
 
-## 6. `MyThreadClass_lock_2.py` — Thread Lock (Optimized)
-* **Concept:** Fine-grained locking to improve performance.
-* **Execution:** Released the lock before `time.sleep()`, allowing other threads to enter their critical sections during the wait.
-* **End Use:** Balancing data protection with execution speed.
-* **When to Use:** When only a small portion of the thread's work (like a print or write) needs protection.
-* **How to Use:** Keep the "locked" section as short as possible.
-* **Advantages:** Much faster than full-task locking; allows threads to overlap during non-critical work.
-* **Disadvantages:** Requires careful analysis of what truly needs to be "locked."
+## MyThreadClass.py
+
+### Concept
+
+Executing multiple threads concurrently using a custom thread class.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Performs concurrent task execution and measures runtime.
+
+### When to Use
+
+When multiple independent tasks need to run simultaneously.
+
+### How to Use
+
+Run the program and observe thread execution and completion times.
+
+### Advantages
+
+* Concurrent execution
+* Improved responsiveness
+
+### Disadvantages
+
+* Requires synchronization for shared resources
 
 ---
 
-## 7. `Rlock.py` — Reentrant Lock
-* **Concept:** Using `threading.RLock()` to allow nested lock acquisition.
-* **Execution:** Implemented a `Box` class where methods calling each other both required the same lock.
-* **End Use:** Solving deadlocks in recursive functions or nested method calls.
-* **When to Use:** When a thread needs to re-acquire a lock it already holds.
-* **How to Use:** Replace `Lock()` with `RLock()`; must be released as many times as it is acquired.
-* **Advantages:** Prevents "self-deadlock" in complex class structures.
-* **Disadvantages:** Slightly more overhead than a standard lock.
+## MyThreadClass_lock.py
+
+### Concept
+
+Using a Lock to ensure only one thread accesses a critical section at a time.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Prevents race conditions and protects shared resources.
+
+### When to Use
+
+When multiple threads access shared data.
+
+### How to Use
+
+Run the program to observe serialized execution using locks.
+
+### Advantages
+
+* Data consistency
+* Safe resource access
+
+### Disadvantages
+
+* Reduced parallelism
+* Increased execution time
 
 ---
 
-## 8. `Semaphore.py` — Semaphore for Signaling
-* **Concept:** Controlling resource access via `threading.Semaphore()`.
-* **Execution:** Used a semaphore (starting at 0) to force a consumer to wait for a producer's signal.
-* **End Use:** Managing resource pools or simple producer-consumer signaling.
-* **When to Use:** To limit the number of threads accessing a resource or for basic synchronization.
-* **How to Use:** `acquire()` decrements the counter; `release()` increments it and wakes waiting threads.
-* **Advantages:** Precise control over the number of allowed concurrent threads.
-* **Disadvantages:** Can lead to race conditions on shared variables if not used with a lock.
+## MyThreadClass_lock_2.py
+
+### Concept
+
+Using locks only around critical sections to improve performance.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Provides synchronization while minimizing lock overhead.
+
+### When to Use
+
+When only a small portion of code requires protection.
+
+### How to Use
+
+Run the program and compare performance with full-lock implementation.
+
+### Advantages
+
+* Better concurrency
+* Reduced waiting time
+
+### Disadvantages
+
+* Requires careful lock placement
 
 ---
 
-## 9. `Event.py` — Thread Event Signaling
-* **Concept:** One-to-many signaling using `threading.Event()`.
-* **Execution:** A Producer sets an event after creating data; a Consumer waits for the event to trigger.
-* **End Use:** Notifying threads that a specific condition (like "Data Ready") has been met.
-* **When to Use:** For simple "stop/go" signals between threads.
-* **How to Use:** Use `event.wait()` to block and `event.set()` to signal all waiting threads.
-* **Advantages:** Simple and clean; does not require manual counter management.
-* **Disadvantages:** Risk of missing signals if `clear()` is called too quickly.
+## Rlock.py
+
+### Concept
+
+Using a Reentrant Lock (RLock) that allows the same thread to acquire a lock multiple times.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Supports nested locking without causing deadlocks.
+
+### When to Use
+
+When synchronized methods call other synchronized methods.
+
+### How to Use
+
+Run the program to observe concurrent add and remove operations.
+
+### Advantages
+
+* Prevents self-deadlock
+* Supports nested synchronization
+
+### Disadvantages
+
+* Slightly higher overhead than standard locks
 
 ---
 
-## 10. `Condition.py` — Thread Condition Variable
-* **Concept:** Complex coordination using `threading.Condition()`.
-* **Execution:** Managed a buffer where the Producer waits if the list is full and the Consumer waits if it's empty.
-* **End Use:** Sophisticated Producer-Consumer models with state-dependent logic.
-* **When to Use:** When threads must wait for a specific state change in shared data.
-* **How to Use:** Use `with condition:`, `wait()` to pause, and `notify()` to wake others.
-* **Advantages:** Prevents both buffer overflow and underflow; more powerful than Events.
-* **Disadvantages:** Higher complexity; prone to bugs if state logic is incorrect.
+## Semaphore.py
+
+### Concept
+
+Using semaphores for thread synchronization and resource control.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Coordinates producer-consumer communication.
+
+### When to Use
+
+When controlling access to limited resources.
+
+### How to Use
+
+Run the program to observe synchronization between producer and consumer threads.
+
+### Advantages
+
+* Efficient synchronization
+* Controls concurrent access
+
+### Disadvantages
+
+* Incorrect usage may cause deadlocks
 
 ---
 
-## 11. `Barrier.py` — Thread Barrier Synchronization
-* **Concept:** Synchronizing multiple threads at a specific checkpoint.
-* **Execution:** Three "runner" threads wait at a `finish_line.wait()` until all arrive before proceeding.
-* **End Use:** Phased parallel algorithms where all parts must finish before the next step starts.
-* **When to Use:** When you need a "meeting" point for a fixed number of threads.
-* **How to Use:** Define `Barrier(n)`; all threads call `wait()`.
-* **Advantages:** Guarantees all threads stay "in sync" through different execution phases.
-* **Disadvantages:** If one thread fails to reach the barrier, all other threads block indefinitely.
+## Event.py
+
+### Concept
+
+Using Event objects for signaling between threads.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Allows one thread to notify another when an action occurs.
+
+### When to Use
+
+When simple thread communication is required.
+
+### How to Use
+
+Run the program to observe producer-generated notifications.
+
+### Advantages
+
+* Simple implementation
+* Lightweight synchronization
+
+### Disadvantages
+
+* Limited flexibility compared to conditions
 
 ---
 
-## 12. `Threading_with_queue.py` — Thread-Safe Queue
-* **Concept:** Using the `queue.Queue` class for safe data exchange.
-* **Execution:** One producer adds items to a queue while three consumers process them concurrently.
-* **End Use:** Standard practice for producer-consumer patterns in Python.
-* **When to Use:** Whenever threads need to share data safely without manual locking logic.
-* **How to Use:** Use `put()` to add data and `get()` to retrieve it.
-* **Advantages:** Automatically handles all internal locking; highly scalable with multiple consumers.
-* **Disadvantages:** Requires a "poison pill" or timeout to stop consumer threads gracefully.
+## Condition.py
 
+### Concept
+
+Using Condition variables for coordinated thread communication.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Implements a producer-consumer model with shared resources.
+
+### When to Use
+
+When threads must wait for specific conditions.
+
+### How to Use
+
+Run the program to observe synchronized production and consumption.
+
+### Advantages
+
+* Efficient coordination
+* Prevents busy waiting
+
+### Disadvantages
+
+* More complex than locks and events
+
+---
+
+## Barrier.py
+
+### Concept
+
+Using barriers to synchronize a fixed number of threads.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Ensures all threads reach a specific point before continuing.
+
+### When to Use
+
+When tasks must proceed in phases.
+
+### How to Use
+
+Run the program and observe threads waiting at the barrier.
+
+### Advantages
+
+* Easy phase synchronization
+* Prevents premature execution
+
+### Disadvantages
+
+* All threads must reach the barrier
+
+---
+
+## Threading_with_queue.py
+
+### Concept
+
+Thread-safe communication using Queue.
+
+### Execution
+
+Run the script using Python.
+
+### End Use
+
+Implements producer-consumer communication without explicit locks.
+
+### When to Use
+
+When multiple threads exchange data safely.
+
+### How to Use
+
+Run the program to observe producers adding items and consumers processing them.
+
+### Advantages
+
+* Thread-safe by design
+* Simplifies synchronization
+
+### Disadvantages
+
+* Queue operations introduce overhead
