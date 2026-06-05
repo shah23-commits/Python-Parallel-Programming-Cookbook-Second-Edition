@@ -2,7 +2,7 @@
 
 This chapter explores advanced threading concepts in Python, focusing on how to manage, identify, and synchronize multiple threads to prevent data corruption and coordinate complex tasks.
 
----
+---git
 
 ## 1. `Thread_definition.py` — Basic Thread Creation
 * **Concept:** Creating and running basic threads using the `threading` module.
